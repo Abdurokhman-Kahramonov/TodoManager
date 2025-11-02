@@ -1,16 +1,17 @@
+
 # ✅ Spring Boot To‑Do App — Project Documentation
 
 A secure, database‑backed **Spring Boot** application that lets authenticated users **create, list, update, and delete** personal to‑dos.  
-The stack includes **Spring MVC**, **Spring Security**, **Spring Data JPA**, **Hibernate**, **PostgreSQL**, **JSP views**, and **Bean Validation**. fileciteturn3file0
+The stack includes **Spring MVC**, **Spring Security**, **Spring Data JPA**, **Hibernate**, **PostgreSQL**, **JSP views**, and **Bean Validation**. 
 
 ---
 
 ## ✨ Features
-- User login with **in‑memory users** (BCrypt‑hashed passwords). fileciteturn3file0  
-- To‑Do CRUD (create, read, update, delete) with **JPA/Hibernate** and **PostgreSQL**. fileciteturn3file0  
-- **Server‑side validation** on the `Todo` entity (description length). fileciteturn3file0  
-- **JSP** views with prefix/suffix config and a simple welcome page that shows the logged‑in username. fileciteturn3file0  
-- Two controller implementations provided: **in‑memory service** and a production **JPA** variant. fileciteturn3file0
+- User login with **in‑memory users** (BCrypt‑hashed passwords).   
+- To‑Do CRUD (create, read, update, delete) with **JPA/Hibernate** and **PostgreSQL**.   
+- **Server‑side validation** on the `Todo` entity (description length).   
+- **JSP** views with prefix/suffix config and a simple welcome page that shows the logged‑in username.   
+- Two controller implementations provided: **in‑memory service** and a production **JPA** variant. 
 
 ---
 
@@ -30,7 +31,7 @@ public class Todo {
 }
 ```
 - Mapped to table **`todoT`** with `@Entity/@Table`.  
-- Validation: `@Size(min=5, message="enter at least 10 characters")`. (Note the **message says 10** while min=5—see _Known quirks_.) fileciteturn3file0
+- Validation: `@Size(min=5, message="enter at least 10 characters")`. (Note the **message says 10** while min=5—see _Known quirks_.) 
 
 ---
 
@@ -40,7 +41,7 @@ public interface TodoRepository extends JpaRepository<Todo,Integer> {
   List<Todo> findByUsername(String username);
 }
 ```
-- Standard CRUD via `JpaRepository`, plus a derived query to get todos for the logged‑in user. fileciteturn3file0
+- Standard CRUD via `JpaRepository`, plus a derived query to get todos for the logged‑in user. 
 
 ---
 
@@ -72,35 +73,35 @@ public class TodoControllerJPA {
 }
 ```
 - Uses the authenticated principal from `SecurityContextHolder` to scope data by username.  
-- Persists changes via `TodoRepository.save(...)`. fileciteturn3file0
+- Persists changes via `TodoRepository.save(...)`. 
 
 #### b) In‑Memory Controller (example/legacy)
-- Same endpoints as above, but backed by `TodoService` (static list). Currently commented out with `//@Controller`. Useful for demos or tests without DB. fileciteturn3file0
+- Same endpoints as above, but backed by `TodoService` (static list). Currently commented out with `//@Controller`. Useful for demos or tests without DB. 
 
 #### Welcome Controller
-- Maps **`/`** → `welcomePage.jsp`, adds the logged‑in username to the model. fileciteturn3file0
+- Maps **`/`** → `welcomePage.jsp`, adds the logged‑in username to the model. 
 
 ---
 
 ### 4) Service Layer (demo) — `TodoService`
 - Stores todos in a static list, provides `findByUserName`, `addTodo`, `deleteTodo`, `findById`, `updateTodo`.  
-- Intended for **non‑JPA** mode; the JPA controller supersedes it in production. fileciteturn3file0
+- Intended for **non‑JPA** mode; the JPA controller supersedes it in production. 
 
-> **Note:** `findByUserName` uses `==` for string comparison and `addTodo` ignores the incoming date; both are noted under _Known quirks_. fileciteturn3file0
+> **Note:** `findByUserName` uses `==` for string comparison and `addTodo` ignores the incoming date; both are noted under _Known quirks_. 
 
 ---
 
 ### 5) Security — `SpringSecurityConfiguration`
 - **Users**: `Jack/password`, `Ferfero/ferfer` (BCrypt‑encoded at startup).  
 - **AuthN/AuthZ**: all routes require authentication; default **form login** is enabled.  
-- **CSRF** disabled and frame options disabled (useful during H2/dev, though here DB is Postgres). fileciteturn3file0
+- **CSRF** disabled and frame options disabled (useful during H2/dev, though here DB is Postgres). 
 
 ```java
 @Bean InMemoryUserDetailsManager createUserDetailsManager() { ... }
 @Bean SecurityFilterChain filterChain(HttpSecurity http) { ... }
 @Bean PasswordEncoder passwordEncoder() { return new BCryptPasswordEncoder(); }
 ```
-fileciteturn3file0
+
 
 ---
 
@@ -121,9 +122,9 @@ spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.PostgreSQLDialect
 ```
 - JSP view resolver is configured; dates formatted as `yyyy-MM-dd`.  
 - PostgreSQL connection + Hibernate dialect; `ddl-auto=update`.  
-- SQL logged to console. fileciteturn3file0
+- SQL logged to console. 
 
-> ⚠️ **Security Reminder:** The file contains a **plain‑text DB password**. Move secrets to environment variables or a secrets manager before production use. fileciteturn3file0
+> ⚠️ **Security Reminder:** The file contains a **plain‑text DB password**. Move secrets to environment variables or a secrets manager before production use. 
 
 #### Sample Data (schema.sql / data.sql semantics)
 ```sql
@@ -131,7 +132,7 @@ insert into todo(id, username, description, target_date, done) values
 (10003, 'Jack', 'Prepare presentation slides', CURRENT_DATE, false);
 ...
 ```
-- Inserts several starter rows for user `Jack`. fileciteturn3file0
+- Inserts several starter rows for user `Jack`. 
 
 ---
 
@@ -147,7 +148,7 @@ insert into todo(id, username, description, target_date, done) values
 | POST   | `/update-todo`| Update todo (validate)       | redirect→list |
 | GET    | `/delete-todo?id={id}` | Delete by id        | redirect→list |
 
-All endpoints require authentication; unauthenticated users are redirected to the login form. fileciteturn3file0
+All endpoints require authentication; unauthenticated users are redirected to the login form. 
 
 ---
 
@@ -156,42 +157,42 @@ All endpoints require authentication; unauthenticated users are redirected to th
 ### Prerequisites
 - JDK 17+  
 - Maven 3.9+  
-- PostgreSQL running locally (`todo` database created; user/password match application.properties). fileciteturn3file0
+- PostgreSQL running locally (`todo` database created; user/password match application.properties). 
 
 ### Run
 ```bash
 mvn spring-boot:run
 ```
-Then open: `http://localhost:8080/` → login with `Jack / password` (or `Ferfero / ferfer`). fileciteturn3file0
+Then open: `http://localhost:8080/` → login with `Jack / password` (or `Ferfero / ferfer`). 
 
 ---
 
 ## 🧪 Validation & Forms
 - The `Todo` form binds to the entity with `@Valid`; if `BindingResult` has errors, the **`todo.jsp`** form is re‑shown.  
-- Description must satisfy `@Size(min=5, message="enter at least 10 characters")`. Adjust message/min to be consistent. fileciteturn3file0
+- Description must satisfy `@Size(min=5, message="enter at least 10 characters")`. Adjust message/min to be consistent. 
 
 ---
 
 ## 🛠 Known Quirks / Fix‑Ups
 
 1) **Validation message mismatch**  
-   - `@Size(min=5, message="enter at least 10 characters")` → choose either `min=10` or fix message to 5. fileciteturn3file0
+   - `@Size(min=5, message="enter at least 10 characters")` → choose either `min=10` or fix message to 5.
 
 2) **String comparison in `TodoService.findByUserName`**  
    - Uses `==` instead of `.equals(...)`. Replace with:
    ```java
    todo -> username.equals(todo.getUsername())
    ```
-   fileciteturn3file0
+ 
 
 3) **`TodoService.addTodo` ignores provided date**  
-   - Currently uses `LocalDate.now()` regardless of input. Use the passed `localDate`. fileciteturn3file0
+   - Currently uses `LocalDate.now()` regardless of input. Use the passed `localDate`. 
 
 4) **CSRF disabled**  
-   - Re‑enable CSRF for production or protect state‑changing endpoints via tokens. fileciteturn3file0
+   - Re‑enable CSRF for production or protect state‑changing endpoints via tokens. 
 
 5) **Plain‑text DB password**  
-   - Externalize to env vars or Spring Cloud Config / Vault. fileciteturn3file0
+   - Externalize to env vars or Spring Cloud Config / Vault. 
 
 ---
 
@@ -202,7 +203,7 @@ Build an executable jar:
 mvn clean package
 java -jar target/myFirstApp-*.jar
 ```
-- Configure DB credentials via environment variables or `--spring.datasource.*` properties at runtime. fileciteturn3file0
+- Configure DB credentials via environment variables or `--spring.datasource.*` properties at runtime. fileciteturn3file0
 
 ---
 
@@ -211,14 +212,14 @@ Users are declared in‐memory with roles `USER` and `ADMIN`. Passwords are **BC
 ```java
 User.builder().passwordEncoder(enc).username("Jack").password("password").roles("USER","ADMIN").build();
 ```
-Update or replace with JDBC/LDAP/Keycloak for real deployments. fileciteturn3file0
+Update or replace with JDBC/LDAP/Keycloak for real deployments. fileciteturn3file0
 
 ---
 
 ## 🗺 Data Model Notes
 - `id` is generated; ensure JSP forms include hidden `id` field during updates.  
 - `done` is a boolean; render as checkbox in JSP.  
-- `targetDate` format is configured to `yyyy-MM-dd` to match HTML date inputs. fileciteturn3file0
+- `targetDate` format is configured to `yyyy-MM-dd` to match HTML date inputs. fileciteturn3file0
 
 ---
 
@@ -227,7 +228,6 @@ Update or replace with JDBC/LDAP/Keycloak for real deployments. filecitetu
 - Add pagination/sorting with `Pageable`.  
 - Add REST API (JSON) alongside MVC.  
 - Add integration tests with **Testcontainers** for Postgres.  
-- Connect Spring Security to a database or OAuth 2.0 provider. fileciteturn3file0
+- Connect Spring Security to a database or OAuth 2.0 provider. fileciteturn3file0
 
 ---
-
