@@ -231,5 +231,3 @@ Update or replace with JDBC/LDAP/Keycloak for real deployments. filecitetu
 
 ---
 
-## ⚖️ License
-Add your preferred license (e.g., MIT) at the repository root.
